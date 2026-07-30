@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Message for You</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        :root {
+            --paper: rgba(255, 255, 255, 0.92);
+            --ink: #1f2a44;
+            --accent: #6f42c1;
+            --accent-2: #ff7ab6;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at top left, rgba(255, 122, 182, 0.35), transparent 32%),
+                radial-gradient(circle at top right, rgba(111, 66, 193, 0.35), transparent 28%),
+                linear-gradient(135deg, #1d1b4d 0%, #4c2f7d 48%, #ff8fb5 100%);
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+
+        body::before {
+            width: 240px;
+            height: 240px;
+            left: -60px;
+            bottom: -60px;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        body::after {
+            width: 180px;
+            height: 180px;
+            right: 4%;
+            top: 12%;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes drift {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .hero-shell {
+            width: 100%;
+            animation: floatIn 0.7s ease-out;
+        }
+
+        .glass-card {
+            background: var(--paper);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .sparkle {
+            animation: drift 4s ease-in-out infinite;
+        }
+
+        .hero-title {
+            letter-spacing: -0.04em;
+        }
+
+        .soft-pill {
+            background: rgba(111, 66, 193, 0.12);
+            color: var(--accent);
+        }
+
+        .accent-card {
+            border-left: 4px solid var(--accent);
+            background: linear-gradient(180deg, rgba(111, 66, 193, 0.07), rgba(255, 255, 255, 0.76));
+        }
+
+        .reason-item {
+            padding-left: 0;
+            padding-right: 0;
+            color: #35415f;
+        }
+
+        .reason-item::before {
+            content: "✦";
+            color: var(--accent-2);
+            margin-right: 0.65rem;
+        }
+
+        .mini-stat {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(111, 66, 193, 0.12);
+        }
+
+        .special-note {
+            background: linear-gradient(135deg, rgba(111, 66, 193, 0.15), rgba(255, 122, 182, 0.14));
+        }
+
+        #celebrationModal .modal-dialog {
+            max-width: 28rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #celebrationModal .modal-content {
+            margin-inline: auto;
+        }
+
+        .fireworks-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1090;
+        }
+
+        .firework-particle {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            will-change: transform, opacity;
+            animation: fireworkFlight 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .firework-comet {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            background: #fff;
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.15);
+            will-change: transform, opacity;
+            animation: fireworkFlight 850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .button-pop {
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .shine-hit {
+            animation: shineHit 420ms ease-out;
+        }
+
+        @keyframes fireworkFlight {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) scale(0.1);
+            }
+        }
+
+        @keyframes shineHit {
+            0% {
+                transform: translateY(0) scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: translateY(-2px) scale(1.01);
+                filter: brightness(1.05);
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                filter: brightness(1);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        @media (max-width: 767.98px) {
+            body {
+                background:
+                    radial-gradient(circle at top left, rgba(255, 122, 182, 0.22), transparent 28%),
+                    radial-gradient(circle at top right, rgba(111, 66, 193, 0.22), transparent 24%),
+                    linear-gradient(180deg, #1d1b4d 0%, #4c2f7d 54%, #ff8fb5 100%);
+            }
+
+            body::before {
+                width: 160px;
+                height: 160px;
+                left: -70px;
+                bottom: -70px;
+            }
+
+            body::after {
+                width: 120px;
+                height: 120px;
+                right: -20px;
+                top: 8%;
+            }
+
+            .hero-shell {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+
+            .glass-card {
+                border-radius: 1.5rem;
+            }
+
+            .p-4.p-md-5 {
+                padding: 1.25rem !important;
+            }
+
+            .hero-title {
+                font-size: calc(1.45rem + 2vw);
+                line-height: 1.08;
+            }
+
+            .lead {
+                font-size: 1rem;
+            }
+
+            .sparkle {
+                font-size: 1.6rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .mini-stat {
+                padding: 0.85rem !important;
+            }
+
+            .special-note {
+                padding: 1rem !important;
+            }
+
+            .special-note .text-nowrap {
+                white-space: normal !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #celebrationModal .modal-dialog {
+                margin: 0.75rem;
+                min-height: calc(100vh - 1.5rem);
+                display: flex;
+                align-items: center;
+            }
+
+            #celebrationModal .modal-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="py-4 py-md-5">
+    <div class="fireworks-layer" id="fireworksLayer" aria-hidden="true"></div>
+    <main class="container hero-shell px-3">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-9">
+                <section class="glass-card shadow-lg rounded-5 overflow-hidden">
+                    <div class="p-4 p-md-5">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 gap-md-3 mb-4">
+                            <span class="badge rounded-pill soft-pill px-3 py-2">A gift card just for you</span>
+                            <span class="text-uppercase small fw-semibold text-secondary">Made with care</span>
+                        </div>
+
+                        <div class="row align-items-center g-4 g-md-5">
+                            <div class="col-12 col-lg-7 text-center text-lg-start">
+                                <div class="sparkle display-6 mb-3">✨ 🌙 ✨</div>
+                                <h1 id="heroTitle" class="display-4 fw-bold hero-title mb-3">You're Amazing, and this
+                                    page knows it.</h1>
+                                <p id="introText" class="lead text-secondary mb-4">
+                                    I wanted this to feel like a little keepsake: warm, bright, and a bit magical.
+                                </p>
+
+                                <div
+                                    class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start mb-4">
+                                    <span
+                                        class="badge rounded-pill text-bg-primary-subtle text-primary-emphasis px-3 py-2">Kind</span>
+                                    <span
+                                        class="badge rounded-pill text-bg-warning-subtle text-warning-emphasis px-3 py-2">Bright</span>
+                                    <span
+                                        class="badge rounded-pill text-bg-success-subtle text-success-emphasis px-3 py-2">Special</span>
+                                </div>
+
+                                <div
+                                    class="d-grid gap-2 d-sm-flex justify-content-center justify-content-lg-start mb-4">
+                                    <button id="complimentBtn" type="button"
+                                        class="btn btn-primary btn-lg px-4 shadow-sm w-100 w-sm-auto">
+                                        Show compliment
+                                    </button>
+                                    <button id="copyBtn" type="button"
+                                        class="btn btn-outline-primary btn-lg px-4 w-100 w-sm-auto">
+                                        Copy message
+                                    </button>
+                                    <button id="celebrateBtn" type="button"
+                                        class="btn btn-success btn-lg px-4 w-100 w-sm-auto">
+                                        Celebrate
+                                    </button>
+                                </div>
+
+                                <div class="alert alert-info border-0 rounded-4 mb-0" role="alert" id="statusMessage">
+                                    Tap a button to change this message.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-5">
+                                <div class="card accent-card border-0 rounded-4 shadow-sm mb-3">
+                                    <div class="card-body p-4">
+                                        <h2 class="h5 fw-bold mb-3">Reasons you matter</h2>
+                                        <ul class="list-unstyled mb-0 d-grid gap-3" id="reasonsList">
+                                            <li class="reason-item">You're an incredible friend</li>
+                                            <li class="reason-item">You inspire me every single day</li>
+                                            <li class="reason-item">Your smile brightens up the room</li>
+                                            <li class="reason-item">You have an amazing heart</li>
+                                            <li class="reason-item">You make life more fun and meaningful</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="stats-grid gap-3 text-center">
+                                    <div>
+                                        <div class="mini-stat rounded-4 p-3 h-100">
+                                            <div class="fw-bold text-primary fs-4">100%</div>
+                                            <div class="small text-secondary">Kind</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="mini-stat rounded-4 p-3 h-100">
+                                            <div class="fw-bold text-danger fs-4">∞</div>
+                                            <div class="small text-secondary">Value</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="mini-stat rounded-4 p-3 h-100">
+                                            <div class="fw-bold text-success fs-4">24/7</div>
+                                            <div class="small text-secondary">Awesome</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="special-note rounded-4 p-4 mt-4 mt-md-5">
+                            <div
+                                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                <div>
+                                    <div class="fw-semibold text-primary-emphasis mb-1">Tiny note, big meaning</div>
+                                    <div class="text-secondary">You deserve beautiful things, honest praise, and a
+                                        little celebration.</div>
+                                </div>
+                                <div class="text-nowrap fw-semibold text-primary-emphasis">Made with ♥ for someone
+                                    special</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="actionToast" class="toast align-items-center text-bg-dark border-0" role="status"
+                aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toastText">Action completed.</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="celebrationModal" tabindex="-1" aria-labelledby="celebrationModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-scrollable-sm">
+                <div class="modal-content rounded-5 border-0 shadow-lg overflow-hidden">
+                    <div class="modal-header border-0 text-white"
+                        style="background: linear-gradient(135deg, #6f42c1, #ff7ab6);">
+                        <div>
+                            <h2 class="modal-title fs-4 fw-bold mb-1" id="celebrationModalLabel">A tiny celebration</h2>
+                            <div class="small opacity-75">Because special people deserve a special moment.</div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center py-5">
+                        <div class="display-5 mb-3">🎉💜✨</div>
+                        <p class="mb-0 fs-5">You just unlocked a little burst of magic - the kind of beautiful, glowing
+                            energy that makes everything around you feel brighter, softer, and more alive.</p>
+                    </div>
+                    <div class="modal-footer border-0 justify-content-center pb-4">
+                        <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Keep smiling</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script>
+        const statusMessage = document.getElementById('statusMessage');
+        const heroTitle = document.getElementById('heroTitle');
+        const introText = document.getElementById('introText');
+        const toastElement = document.getElementById('actionToast');
+        const toastText = document.getElementById('toastText');
+        const celebrateModalElement = document.getElementById('celebrationModal');
+        const reasonsList = document.getElementById('reasonsList');
+        const fireworksLayer = document.getElementById('fireworksLayer');
+
+        const complimentBtn = document.getElementById('complimentBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const celebrateBtn = document.getElementById('celebrateBtn');
+
+        const toast = bootstrap.Toast.getOrCreateInstance(toastElement, { delay: 2200 });
+        const celebrateModal = bootstrap.Modal.getOrCreateInstance(celebrateModalElement);
+
+        const compliments = [
+            {
+                title: 'You make ordinary moments feel special.',
+                intro: 'I wanted this to feel like a little keepsake: warm, bright, and a bit magical.',
+                status: 'You are thoughtful, kind, and impossible to replace.',
+                toast: 'A new compliment appeared.',
+                reason: 'You make life feel brighter just by being in it.'
+            },
+            {
+                title: 'You are the kind of person people remember.',
+                intro: 'Your presence has a way of turning a normal day into something worth keeping.',
+                status: 'You are rare, lovable, and impossible to forget.',
+                toast: 'Second compliment unlocked.',
+                reason: 'You leave people better than you found them.'
+            },
+            {
+                title: 'You deserve the softest, happiest things.',
+                intro: 'This page is just a tiny reminder that you matter a lot.',
+                status: 'You are deeply appreciated today and always.',
+                toast: 'Compliment delivered with extra sparkle.',
+                reason: 'You bring comfort, joy, and real warmth.'
+            }
+        ];
+        const messageText = 'You matter more than this page can say.';
+        let complimentIndex = 0;
+
+        function setReasonHighlight(message) {
+            const existingHighlight = reasonsList.querySelector('.text-primary-emphasis');
+            if (existingHighlight) {
+                existingHighlight.classList.remove('text-primary-emphasis', 'fw-semibold');
+                existingHighlight.classList.add('reason-item');
+            }
+
+            const lastReason = reasonsList.lastElementChild;
+            lastReason.textContent = message;
+            lastReason.classList.add('text-primary-emphasis', 'fw-semibold');
+        }
+
+        function showToast(message) {
+            toastText.textContent = message;
+            toast.show();
+        }
+
+        function createBurst(x, y, colors, count, spread) {
+            const particles = [];
+
+            for (let index = 0; index < count; index += 1) {
+                const particle = document.createElement('span');
+                const angle = (Math.PI * 2 * index) / count;
+                const distance = spread * (0.55 + Math.random() * 0.45);
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const color = colors[index % colors.length];
+                const comet = index % 7 === 0;
+
+                particle.className = comet ? 'firework-comet' : 'firework-particle';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.color = color;
+                particle.style.backgroundColor = comet ? color : color;
+                particle.style.setProperty('--dx', `${dx}px`);
+                particle.style.setProperty('--dy', `${dy}px`);
+                particle.style.transform = 'translate(-50%, -50%)';
+
+                if (!comet) {
+                    particle.style.width = `${8 + Math.random() * 8}px`;
+                    particle.style.height = particle.style.width;
+                }
+
+                fireworksLayer.appendChild(particle);
+                particles.push(particle);
+            }
+
+            window.setTimeout(() => {
+                particles.forEach((particle) => particle.remove());
+            }, 1000);
+        }
+
+        function launchFireworks(originX, originY) {
+            const palette = ['#ffffff', '#ffd166', '#ff7ab6', '#7cf7d4', '#8b5cf6', '#5eead4'];
+            const bursts = [
+                { offsetX: 0, offsetY: 0, count: 28, spread: 125 },
+                { offsetX: -90, offsetY: -70, count: 20, spread: 105 },
+                { offsetX: 95, offsetY: -60, count: 20, spread: 105 },
+                { offsetX: -35, offsetY: 45, count: 14, spread: 80 },
+                { offsetX: 60, offsetY: 35, count: 14, spread: 80 }
+            ];
+
+            bursts.forEach((burst) => {
+                createBurst(originX + burst.offsetX, originY + burst.offsetY, palette, burst.count, burst.spread);
+            });
+        }
+
+        function pulseButton(button) {
+            button.classList.add('button-pop', 'shine-hit');
+            window.setTimeout(() => {
+                button.classList.remove('button-pop', 'shine-hit');
+            }, 420);
+        }
+
+        function runButtonSparkles(button, intensity = 'normal') {
+            const buttonBox = button.getBoundingClientRect();
+            const originX = buttonBox.left + buttonBox.width / 2;
+            const originY = buttonBox.top + buttonBox.height / 2;
+
+            pulseButton(button);
+
+            if (intensity === 'large') {
+                launchFireworks(originX, originY);
+                window.setTimeout(() => {
+                    launchFireworks(window.innerWidth * 0.5, window.innerHeight * 0.22);
+                }, 220);
+                return;
+            }
+
+            createBurst(originX, originY, ['#ffffff', '#ffd166', '#ff7ab6', '#8b5cf6'], 16, 75);
+        }
+
+        complimentBtn.addEventListener('click', () => {
+            runButtonSparkles(complimentBtn);
+
+            const compliment = compliments[complimentIndex];
+            complimentIndex = (complimentIndex + 1) % compliments.length;
+
+            heroTitle.textContent = compliment.title;
+            introText.textContent = compliment.intro;
+            statusMessage.className = 'alert alert-success border-0 rounded-4 mb-0';
+            statusMessage.textContent = compliment.status;
+            setReasonHighlight(compliment.reason);
+            heroTitle.classList.remove('text-primary');
+            heroTitle.classList.add('text-danger');
+            heroTitle.style.transform = 'scale(1.01)';
+            setTimeout(() => {
+                heroTitle.style.transform = '';
+            }, 250);
+
+            showToast(compliment.toast);
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            runButtonSparkles(copyBtn);
+
+            try {
+                await navigator.clipboard.writeText(messageText);
+                showToast('Message copied to clipboard.');
+            } catch {
+                showToast('Clipboard access was blocked.');
+            }
+        });
+
+        celebrateBtn.addEventListener('click', () => {
+            runButtonSparkles(celebrateBtn, 'large');
+            celebrateModal.show();
+            showToast('Celebration opened.');
+        });
+    </script>
+</body>
+
+</html>
